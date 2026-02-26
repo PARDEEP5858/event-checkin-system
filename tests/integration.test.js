@@ -15,21 +15,32 @@ beforeEach(() => {
 test("register attendee stored", async () => {
   await registerAttendee(db, 1, "Alice", "alice@test.com");
 
-  db.get("SELECT * FROM attendees", (err, row) => {
-    expect(row).toBeDefined();
+  const row = await new Promise((resolve, reject) => {
+    db.get("SELECT * FROM attendees", (err, row) => {
+      if (err) reject(err);
+      resolve(row);
+    });
   });
+
+  expect(row).toBeDefined();
 });
 
 test("check-in updates status", async () => {
   await registerAttendee(db, 1, "Bob", "bob@test.com");
   await checkInAttendee(db, 1, "bob@test.com");
 
-  db.get(
-    "SELECT checked_in FROM attendees WHERE email='bob@test.com'",
-    (err, row) => {
-      expect(row.checked_in).toBe(1);
-    }
-  );
+  const row = await new Promise((resolve, reject) => {
+    db.get(
+      "SELECT checked_in FROM attendees WHERE email=?",
+      ["bob@test.com"],
+      (err, row) => {
+        if (err) reject(err);
+        resolve(row);
+      }
+    );
+  });
+
+  expect(row.checked_in).toBe(1);
 });
 
 test("full workflow report", async () => {
