@@ -37,4 +37,4 @@ Follow these steps to set up the project:
 
 1. Clone the repository
 ```bash
-git clone <your-github-repository-link>
+git clone https://github.com/PARDEEP5858/event-checkin-system.git
